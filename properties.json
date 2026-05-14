@@ -1,0 +1,516 @@
+{
+  "starting_amount": 10000000,
+  "player_amount": 1500000,
+  "ahmedabad": {
+    "name": "Ahmedabad",
+    "colour": "green",
+    "colorHex": "#15803d",
+    "type": "property",
+    "price": {
+      "site": 140000,
+      "house": 100000,
+      "hotel": 100000
+    },
+    "mortgage_value": 70000,
+    "rent": {
+      "site": 10000,
+      "colour_group_3": "double",
+      "1house": 50000,
+      "2house": 150000,
+      "3house": 450000,
+      "4house": 625000,
+      "hotel": 750000
+    }
+  },
+  "kolkata": {
+    "name": "Kolkata",
+    "colour": "green",
+    "colorHex": "#15803d",
+    "type": "property",
+    "price": {
+      "site": 160000,
+      "house": 100000,
+      "hotel": 100000
+    },
+    "mortgage_value": 80000,
+    "rent": {
+      "site": 12000,
+      "colour_group_3": "double",
+      "1house": 60000,
+      "2house": 180000,
+      "3house": 500000,
+      "4house": 700000,
+      "hotel": 900000
+    }
+  },
+  "pune": {
+    "name": "Pune",
+    "colour": "green",
+    "colorHex": "#15803d",
+    "type": "property",
+    "price": {
+      "site": 180000,
+      "house": 100000,
+      "hotel": 100000
+    },
+    "mortgage_value": 90000,
+    "rent": {
+      "site": 14000,
+      "colour_group_3": "double",
+      "1house": 70000,
+      "2house": 200000,
+      "3house": 550000,
+      "4house": 750000,
+      "hotel": 950000
+    }
+  },
+  "mumbai": {
+    "name": "Mumbai",
+    "colour": "green",
+    "colorHex": "#15803d",
+    "type": "property",
+    "price": {
+      "site": 200000,
+      "house": 100000,
+      "hotel": 100000
+    },
+    "mortgage_value": 100000,
+    "rent": {
+      "site": 16000,
+      "colour_group_3": "double",
+      "1house": 80000,
+      "2house": 220000,
+      "3house": 600000,
+      "4house": 800000,
+      "hotel": 1000000
+    }
+  },
+  "delhi": {
+    "name": "Delhi",
+    "colour": "green",
+    "colorHex": "#15803d",
+    "type": "property",
+    "price": {
+      "site": 220000,
+      "house": 100000,
+      "hotel": 100000
+    },
+    "mortgage_value": 110000,
+    "rent": {
+      "site": 18000,
+      "colour_group_3": "double",
+      "1house": 90000,
+      "2house": 250000,
+      "3house": 700000,
+      "4house": 875000,
+      "hotel": 1050000
+    }
+  },
+  "patna": {
+    "name": "Patna",
+    "colour": "blue",
+    "colorHex": "#1d4ed8",
+    "type": "property",
+    "price": {
+      "site": 180000,
+      "house": 150000,
+      "hotel": 150000
+    },
+    "mortgage_value": 90000,
+    "rent": {
+      "site": 14000,
+      "colour_group_3": "double",
+      "1house": 70000,
+      "2house": 200000,
+      "3house": 550000,
+      "4house": 750000,
+      "hotel": 950000
+    }
+  },
+  "kanpur": {
+    "name": "Kanpur",
+    "colour": "blue",
+    "colorHex": "#1d4ed8",
+    "type": "property",
+    "price": {
+      "site": 200000,
+      "house": 150000,
+      "hotel": 150000
+    },
+    "mortgage_value": 100000,
+    "rent": {
+      "site": 16000,
+      "colour_group_3": "double",
+      "1house": 80000,
+      "2house": 220000,
+      "3house": 600000,
+      "4house": 800000,
+      "hotel": 1000000
+    }
+  },
+  "indore": {
+    "name": "Indore",
+    "colour": "blue",
+    "colorHex": "#1d4ed8",
+    "type": "property",
+    "price": {
+      "site": 220000,
+      "house": 150000,
+      "hotel": 150000
+    },
+    "mortgage_value": 110000,
+    "rent": {
+      "site": 18000,
+      "colour_group_3": "double",
+      "1house": 90000,
+      "2house": 250000,
+      "3house": 700000,
+      "4house": 875000,
+      "hotel": 1050000
+    }
+  },
+  "agra": {
+    "name": "Agra",
+    "colour": "blue",
+    "colorHex": "#1d4ed8",
+    "type": "property",
+    "price": {
+      "site": 240000,
+      "house": 150000,
+      "hotel": 150000
+    },
+    "mortgage_value": 120000,
+    "rent": {
+      "site": 20000,
+      "colour_group_3": "double",
+      "1house": 100000,
+      "2house": 300000,
+      "3house": 750000,
+      "4house": 925000,
+      "hotel": 1100000
+    }
+  },
+  "jaipur": {
+    "name": "Jaipur",
+    "colour": "blue",
+    "colorHex": "#1d4ed8",
+    "type": "property",
+    "price": {
+      "site": 260000,
+      "house": 150000,
+      "hotel": 150000
+    },
+    "mortgage_value": 130000,
+    "rent": {
+      "site": 22000,
+      "colour_group_3": "double",
+      "1house": 110000,
+      "2house": 330000,
+      "3house": 800000,
+      "4house": 975000,
+      "hotel": 1150000
+    }
+  },
+  "cochin": {
+    "name": "Cochin",
+    "colour": "red",
+    "colorHex": "#dc2626",
+    "type": "property",
+    "price": {
+      "site": 220000,
+      "house": 150000,
+      "hotel": 150000
+    },
+    "mortgage_value": 110000,
+    "rent": {
+      "site": 18000,
+      "colour_group_3": "double",
+      "1house": 90000,
+      "2house": 250000,
+      "3house": 700000,
+      "4house": 875000,
+      "hotel": 1050000
+    }
+  },
+  "shimla": {
+    "name": "Shimla",
+    "colour": "red",
+    "colorHex": "#dc2626",
+    "type": "property",
+    "price": {
+      "site": 240000,
+      "house": 150000,
+      "hotel": 150000
+    },
+    "mortgage_value": 120000,
+    "rent": {
+      "site": 20000,
+      "colour_group_3": "double",
+      "1house": 100000,
+      "2house": 300000,
+      "3house": 750000,
+      "4house": 925000,
+      "hotel": 1100000
+    }
+  },
+  "chandigarh": {
+    "name": "Chandigarh",
+    "colour": "red",
+    "colorHex": "#dc2626",
+    "type": "property",
+    "price": {
+      "site": 260000,
+      "house": 150000,
+      "hotel": 150000
+    },
+    "mortgage_value": 130000,
+    "rent": {
+      "site": 22000,
+      "colour_group_3": "double",
+      "1house": 110000,
+      "2house": 330000,
+      "3house": 800000,
+      "4house": 975000,
+      "hotel": 1150000
+    }
+  },
+  "darjeeling": {
+    "name": "Darjeeling",
+    "colour": "red",
+    "colorHex": "#dc2626",
+    "type": "property",
+    "price": {
+      "site": 280000,
+      "house": 150000,
+      "hotel": 150000
+    },
+    "mortgage_value": 140000,
+    "rent": {
+      "site": 24000,
+      "colour_group_3": "double",
+      "1house": 120000,
+      "2house": 360000,
+      "3house": 850000,
+      "4house": 1025000,
+      "hotel": 1200000
+    }
+  },
+  "ladakh": {
+    "name": "Ladakh",
+    "colour": "red",
+    "colorHex": "#dc2626",
+    "type": "property",
+    "price": {
+      "site": 300000,
+      "house": 150000,
+      "hotel": 150000
+    },
+    "mortgage_value": 150000,
+    "rent": {
+      "site": 26000,
+      "colour_group_3": "double",
+      "1house": 130000,
+      "2house": 390000,
+      "3house": 900000,
+      "4house": 1100000,
+      "hotel": 1275000
+    }
+  },
+  "amritsar": {
+    "name": "Amritsar",
+    "colour": "yellow",
+    "colorHex": "#ca8a04",
+    "type": "property",
+    "price": {
+      "site": 260000,
+      "house": 200000,
+      "hotel": 200000
+    },
+    "mortgage_value": 130000,
+    "rent": {
+      "site": 22000,
+      "colour_group_3": "double",
+      "1house": 110000,
+      "2house": 330000,
+      "3house": 800000,
+      "4house": 975000,
+      "hotel": 1150000
+    }
+  },
+  "goa": {
+    "name": "Goa",
+    "colour": "yellow",
+    "colorHex": "#ca8a04",
+    "type": "property",
+    "price": {
+      "site": 280000,
+      "house": 200000,
+      "hotel": 200000
+    },
+    "mortgage_value": 140000,
+    "rent": {
+      "site": 24000,
+      "colour_group_3": "double",
+      "1house": 120000,
+      "2house": 360000,
+      "3house": 850000,
+      "4house": 1025000,
+      "hotel": 1200000
+    }
+  },
+  "hyderabad": {
+    "name": "Hyderabad",
+    "colour": "yellow",
+    "colorHex": "#ca8a04",
+    "type": "property",
+    "price": {
+      "site": 300000,
+      "house": 200000,
+      "hotel": 200000
+    },
+    "mortgage_value": 150000,
+    "rent": {
+      "site": 26000,
+      "colour_group_3": "double",
+      "1house": 130000,
+      "2house": 390000,
+      "3house": 900000,
+      "4house": 1100000,
+      "hotel": 1275000
+    }
+  },
+  "bangalore": {
+    "name": "Bangalore",
+    "colour": "yellow",
+    "colorHex": "#ca8a04",
+    "type": "property",
+    "price": {
+      "site": 320000,
+      "house": 200000,
+      "hotel": 200000
+    },
+    "mortgage_value": 160000,
+    "rent": {
+      "site": 28000,
+      "colour_group_3": "double",
+      "1house": 150000,
+      "2house": 450000,
+      "3house": 1000000,
+      "4house": 1200000,
+      "hotel": 1400000
+    }
+  },
+  "chennai": {
+    "name": "Chennai",
+    "colour": "yellow",
+    "colorHex": "#ca8a04",
+    "type": "property",
+    "price": {
+      "site": 350000,
+      "house": 200000,
+      "hotel": 200000
+    },
+    "mortgage_value": 175000,
+    "rent": {
+      "site": 35000,
+      "colour_group_3": "double",
+      "1house": 175000,
+      "2house": 500000,
+      "3house": 1100000,
+      "4house": 1300000,
+      "hotel": 1500000
+    }
+  },
+  "waterways": {
+    "name": "Waterways",
+    "colour": "black",
+    "colorHex": "#374151",
+    "type": "transport",
+    "price": {
+      "site": 200000
+    },
+    "mortgage_value": 100000,
+    "rent": {
+      "1owned": 25000,
+      "2owned": 50000,
+      "3owned": 100000,
+      "4owned": 200000
+    }
+  },
+  "roadways": {
+    "name": "Roadways",
+    "colour": "black",
+    "colorHex": "#374151",
+    "type": "transport",
+    "price": {
+      "site": 200000
+    },
+    "mortgage_value": 100000,
+    "rent": {
+      "1owned": 25000,
+      "2owned": 50000,
+      "3owned": 100000,
+      "4owned": 200000
+    }
+  },
+  "airways": {
+    "name": "Airways",
+    "colour": "black",
+    "colorHex": "#374151",
+    "type": "transport",
+    "price": {
+      "site": 200000
+    },
+    "mortgage_value": 100000,
+    "rent": {
+      "1owned": 25000,
+      "2owned": 50000,
+      "3owned": 100000,
+      "4owned": 200000
+    }
+  },
+  "railways": {
+    "name": "Railways",
+    "colour": "black",
+    "colorHex": "#374151",
+    "type": "transport",
+    "price": {
+      "site": 200000
+    },
+    "mortgage_value": 100000,
+    "rent": {
+      "1owned": 25000,
+      "2owned": 50000,
+      "3owned": 100000,
+      "4owned": 200000
+    }
+  },
+  "electricity": {
+    "name": "Electricity",
+    "colour": "black",
+    "colorHex": "#6b7280",
+    "type": "utility",
+    "price": {
+      "site": 150000
+    },
+    "mortgage_value": 75000,
+    "rent": {
+      "1owned": 50000,
+      "2owned": 150000
+    }
+  },
+  "internet": {
+    "name": "Internet",
+    "colour": "black",
+    "colorHex": "#6b7280",
+    "type": "utility",
+    "price": {
+      "site": 150000
+    },
+    "mortgage_value": 75000,
+    "rent": {
+      "1owned": 50000,
+      "2owned": 150000
+    }
+  }
+}

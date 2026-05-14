@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Monopoly Bank India</title>
+  <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="app.css">
+</head>
+
+<body x-data="app()" x-init="init()">
+
+<nav class="navbar navbar-expand-md navbar-dark sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#"><i class="bi bi-bank2"></i> Monopoly India</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navmenu">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" :class="view==='dashboard'&&'active'" href="#" @click.prevent="set_view('dashboard')"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" :class="view==='players'&&'active'" href="#" @click.prevent="set_view('players')"><i class="bi bi-people"></i> Players</a></li>
+        <li class="nav-item"><a class="nav-link" :class="view==='properties'&&'active'" href="#" @click.prevent="set_view('properties')"><i class="bi bi-map"></i> Properties</a></li>
+        <li class="nav-item"><a class="nav-link" :class="view==='history'&&'active'" href="#" @click.prevent="set_view('history')"><i class="bi bi-clock-history"></i> History</a></li>
+        <li class="nav-item"><a class="nav-link" :class="view==='banker'&&'active'" href="#" @click.prevent="set_view('banker')"><i class="bi bi-credit-card-2-front"></i> Banker</a></li>
+        <li class="nav-item"><a class="nav-link" :class="view==='register'&&'active'" href="#" @click.prevent="set_view('register')"><i class="bi bi-person-plus"></i> Register</a></li>
+        <li class="nav-item"><a class="nav-link" :class="view==='settings'&&'active'" href="#" @click.prevent="set_view('settings')"><i class="bi bi-gear"></i> Settings</a></li>
+      </ul>
+      <span class="navbar-text d-flex align-items-center gap-2">
+        <button class="theme-btn" @click="toggle_theme()" :title="dark_mode ? 'Light mode' : 'Dark mode'">
+          <i class="bi fs-6" :class="dark_mode ? 'bi-sun-fill text-warning' : 'bi-moon-stars-fill'"></i>
+        </button>
+        <span class="badge bg-secondary" style="font-size:.65rem"><i class="bi bi-hdd me-1"></i>Local</span>
+      </span>
+    </div>
+  </div>
+</nav>
+
+<!-- DASHBOARD -->
+<div class="view-section" x-show="view==='dashboard'">
+  <div class="section-title"><i class="bi bi-speedometer2 me-2"></i>Dashboard</div>
+  <div class="row g-2 mb-3">
+    <div class="col-6 col-md-3">
+      <div class="card p-2 dash-stat-card" style="border-color:#1d4ed8">
+        <div class="stat-lbl"><i class="bi bi-bank2 text-primary me-1"></i>Bank</div>
+        <div class="stat-val text-warning" x-text="fmt(bank_player?.balance ?? 0)"></div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card p-2 dash-stat-card">
+        <div class="stat-lbl"><i class="bi bi-people me-1 text-info"></i>Players</div>
+        <div class="stat-val text-info" x-text="human_players.length"></div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card p-2 dash-stat-card">
+        <div class="stat-lbl"><i class="bi bi-map me-1 text-success"></i>Properties</div>
+        <div class="stat-val"><span class="text-success" x-text="owned_prop_count"></span><span class="text-muted fs-6" x-text="'/'+total_prop_count"></span></div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card p-2 dash-stat-card">
+        <div class="stat-lbl"><i class="bi bi-circle-fill me-1" :class="game_started?'text-success':'text-danger'"></i>Status</div>
+        <div class="stat-val fs-6" x-text="game_started ? 'In Progress' : 'Not Started'"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title small mb-2"><i class="bi bi-trophy-fill text-warning me-1"></i>Leaderboard</div>
+  <div x-show="human_players.length === 0" class="text-muted small mb-3 ps-1">No players yet — go to Register to add players.</div>
+  <template x-for="(p, idx) in dashboard_players" :key="p.id">
+    <div class="lb-row" @click="open_player(p)">
+      <div class="d-flex align-items-center gap-3">
+        <div class="lb-rank" :class="idx===0?'gold':idx===1?'silver':idx===2?'bronze':''" x-text="'#'+(idx+1)"></div>
+        <div class="flex-grow-1 overflow-hidden">
+          <div class="fw-bold text-truncate" x-text="p.name"></div>
+          <div class="d-flex gap-1 flex-wrap mt-1">
+            <template x-for="pr in p.owned_props" :key="pr.id">
+              <span class="badge-group" :style="'background:'+pr.color_hex" :title="pr.name"></span>
+            </template>
+            <span x-show="p.owned_props.length===0" class="text-muted" style="font-size:.65rem;font-style:italic">no properties</span>
+          </div>
+        </div>
+        <div class="text-end" style="min-width:90px">
+          <div class="fw-bold" :class="p.balance<0?'text-danger':'text-success'" x-text="fmt(p.balance)"></div>
+          <div class="text-muted" style="font-size:.62rem" x-text="p.owned_props.length+' prop'+(p.owned_props.length===1?'':'s')"></div>
+          <div class="bal-bar-track"><div class="bal-bar-fill" :style="'width:'+balance_pct(p)+'%;background:'+player_color(p.id)"></div></div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <div class="section-title small mt-3 mb-2"><i class="bi bi-grid-3x3-gap me-1"></i>Property Board</div>
+  <div x-show="properties.length===0" class="text-muted small">Properties not loaded yet.</div>
+  <template x-for="grp in property_groups" :key="grp.group">
+    <div class="pb-group-row">
+      <div class="pb-group-label d-flex align-items-center gap-1">
+        <span style="width:10px;height:10px;border-radius:2px;flex-shrink:0;display:inline-block" :style="'background:'+grp.color"></span>
+        <span x-text="grp.label"></span>
+      </div>
+      <div class="d-flex flex-wrap gap-1">
+        <template x-for="pr in grp.props" :key="pr.id">
+          <div class="pb-chip" :class="pr.owner_id ? 'owned' : 'unowned'">
+            <span class="pb-prop-name" x-text="pr.name"></span>
+            <span class="pb-owner-name" x-text="pr.owner_name || '—'" :style="pr.owner_id ? 'color:'+player_color(pr.owner_id)+';font-weight:700' : ''"></span>
+            <div class="pb-dev" x-show="pr.hotel || pr.houses > 0">
+              <template x-for="i in pr.houses" :key="i"><span class="pb-house"></span></template>
+              <span class="pb-hotel" x-show="pr.hotel"></span>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </template>
+</div>
+
+<!-- PLAYERS -->
+<div class="view-section" x-show="view==='players'">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="section-title mb-0"><i class="bi bi-people-fill me-2"></i>Players</div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-sm btn-outline-success" @click="start_game()" x-show="!game_started" :disabled="human_players.length < 2"><i class="bi bi-play-fill"></i> Start Game</button>
+      <button class="btn btn-sm btn-outline-danger" @click="confirm_reset()" x-show="game_started"><i class="bi bi-arrow-counterclockwise"></i> Reset</button>
+    </div>
+  </div>
+  <div x-show="!game_started && human_players.length < 2" class="alert alert-info py-2">Add at least 2 players in the Register tab, then click "Start Game".</div>
+  <div class="row g-3">
+    <template x-for="p in players" :key="p.id">
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="card player-card h-100 p-3" @click="open_player(p)">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <i class="bi fs-4" :class="p.is_bank ? 'bi-bank2 text-warning' : 'bi-person-circle text-info'"></i>
+            <span class="fw-bold text-truncate" x-text="p.name"></span>
+          </div>
+          <div class="balance-big" :class="p.balance<0&&'balance-neg'" x-text="fmt(p.balance)"></div>
+          <small class="text-muted mt-1" x-show="!p.is_bank" x-text="props_by_owner(p.id).length+' propert'+(props_by_owner(p.id).length===1?'y':'ies')"></small>
+          <div class="mt-2 d-flex flex-wrap gap-1" x-show="!p.is_bank">
+            <template x-for="pr in props_by_owner(p.id)" :key="pr.id">
+              <span class="badge-group" :style="'background:'+pr.color_hex" :title="pr.name"></span>
+            </template>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
+</div>
+
+<!-- PLAYER DETAIL -->
+<div class="view-section" x-show="view==='player-detail'" x-cloak>
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <button class="btn btn-sm btn-outline-secondary" @click="set_view('players')"><i class="bi bi-arrow-left"></i></button>
+    <div class="section-title mb-0" x-text="sel_player?.name"></div>
+  </div>
+  <template x-if="sel_player">
+    <div>
+      <div class="card p-3 mb-3">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <div class="text-muted small">Balance</div>
+            <div class="balance-big" :class="sel_player.balance<0&&'balance-neg'" x-text="fmt(sel_player.balance)"></div>
+          </div>
+          <div class="col-auto" x-show="!sel_player.is_bank">
+            <button class="btn btn-amber" @click="quick_banker(sel_player)"><i class="bi bi-arrow-left-right"></i> Transfer</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title small mb-2"><i class="bi bi-map-fill me-1"></i>Properties (<span x-text="sel_player_props.length"></span>)</div>
+      <div x-show="sel_player_props.length===0" class="text-muted small mb-3">No properties owned.</div>
+      <div class="deed-grid mb-3">
+        <template x-for="pr in sel_player_props" :key="pr.id">
+          <div class="deed-wrap">
+            <div class="deed">
+              <div class="deed-header" :style="'background:'+pr.color_hex">
+                <div class="deed-type-label" x-text="pr.type==='colored'?'TITLE DEED':pr.type==='station'?'TRANSPORT':'UTILITY'"></div>
+                <div class="deed-owner-ribbon" x-text="sel_player.name"></div>
+              </div>
+              <div class="deed-name" x-text="pr.name"></div>
+              <hr class="deed-hr">
+              <div class="deed-rents" x-show="pr.type==='colored'">
+                <template x-for="row in deed_colored_rows(pr)" :key="row.idx">
+                  <div class="deed-rent-row" :class="row.active&&'rent-active'"><span x-text="row.label"></span><span x-text="row.val"></span></div>
+                </template>
+              </div>
+              <div class="deed-rents" x-show="pr.type==='station'">
+                <template x-for="row in deed_station_rows(pr)" :key="row.idx">
+                  <div class="deed-rent-row" :class="row.active&&'rent-active'"><span x-text="row.label"></span><span x-text="row.val"></span></div>
+                </template>
+              </div>
+              <div class="deed-rents" x-show="pr.type==='utility'">
+                <template x-for="row in deed_utility_rows(pr)" :key="row.idx">
+                  <div class="deed-rent-row" :class="row.active&&'rent-active'"><span x-text="row.label"></span><span x-text="row.val"></span></div>
+                </template>
+              </div>
+              <div class="deed-dev">
+                <template x-if="!pr.hotel && !pr.houses"><span class="deed-dev-empty">no houses</span></template>
+                <template x-for="i in pr.houses" :key="i"><span class="deed-house-icon"></span></template>
+                <span class="deed-hotel-icon" x-show="pr.hotel"></span>
+              </div>
+              <div class="deed-footer">
+                <div class="deed-footer-row"><span>Mortgage</span><span x-text="fmt(pr.mortgage||Math.round(pr.price/2))"></span></div>
+                <div class="deed-footer-row" x-show="pr.house_cost > 0"><span>House / Hotel</span><span x-text="fmt(pr.house_cost)+' ea'"></span></div>
+                <div class="deed-footer-row"><span>Price</span><span x-text="fmt(pr.price)"></span></div>
+              </div>
+            </div>
+            <div class="deed-actions" x-show="!sel_player.is_bank">
+              <button class="btn btn-outline-success" title="Build house" x-show="pr.type==='colored' && !pr.hotel && pr.houses < 4" @click="build_house(sel_player.id, pr.id)">+H</button>
+              <button class="btn btn-outline-danger" title="Demolish house" x-show="pr.houses > 0 && !pr.hotel" @click="demolish_house(sel_player.id, pr.id)">−H</button>
+              <button class="btn btn-outline-warning" title="Build hotel" x-show="pr.houses===4 && !pr.hotel" @click="build_hotel(sel_player.id, pr.id)"><i class="bi bi-building-up"></i></button>
+              <button class="btn btn-outline-danger" title="Demolish hotel" x-show="pr.hotel" @click="demolish_hotel(sel_player.id, pr.id)"><i class="bi bi-building-down"></i></button>
+              <button class="btn btn-outline-secondary" title="Sell to bank" x-show="pr.houses===0 && !pr.hotel" @click="sell_prop(sel_player.id, pr.id)"><i class="bi bi-currency-rupee"></i></button>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <div class="section-title small mb-2"><i class="bi bi-clock-history me-1"></i>Recent Transactions</div>
+      <div x-show="sel_player_txs.length===0" class="text-muted small">No transactions yet.</div>
+      <template x-for="t in sel_player_txs" :key="t.id">
+        <div class="tx-row" :class="t.to_id===sel_player.id?'tx-credit':'tx-debit'">
+          <div class="d-flex justify-content-between">
+            <span>
+              <i class="bi" :class="t.to_id===sel_player.id?'bi-arrow-down-circle-fill text-success':'bi-arrow-up-circle-fill text-danger'"></i>
+              <span class="ms-1 fw-semibold" x-text="t.to_id===sel_player.id?t.from_name:t.to_name"></span>
+            </span>
+            <span class="fw-bold" :class="t.to_id===sel_player.id?'text-success':'text-danger'" x-text="(t.to_id===sel_player.id?'+':'-')+fmt(t.amount)"></span>
+          </div>
+          <div class="text-muted small" x-text="t.description"></div>
+        </div>
+      </template>
+    </div>
+  </template>
+</div>
+
+<!-- BANKER -->
+<div class="view-section" x-show="view==='banker'" x-cloak>
+  <div class="section-title"><i class="bi bi-credit-card-2-front me-2"></i>Banker Panel</div>
+  <div class="card p-3 mb-3">
+    <div class="fw-semibold text-muted small mb-2 text-uppercase">Quick Actions</div>
+    <div class="row g-2">
+      <div class="col-6 col-md-3"><button class="btn btn-outline-success w-100" @click="quick_action('pass-go')"><i class="bi bi-geo-alt"></i><br><small>Pass Go<br>+₹200K</small></button></div>
+      <div class="col-6 col-md-3"><button class="btn btn-outline-danger w-100" @click="quick_action('income-tax')"><i class="bi bi-receipt"></i><br><small>Income Tax<br>-₹200K</small></button></div>
+      <div class="col-6 col-md-3"><button class="btn btn-outline-warning w-100" @click="quick_action('luxury-tax')"><i class="bi bi-gem"></i><br><small>Luxury Tax<br>-₹75K</small></button></div>
+      <div class="col-6 col-md-3"><button class="btn btn-outline-info w-100" @click="quick_action('community')"><i class="bi bi-card-text"></i><br><small>Community<br>+₹50K</small></button></div>
+    </div>
+  </div>
+  <div class="card p-3 mb-3" x-show="quick_act.active" x-cloak>
+    <div class="fw-semibold mb-2" x-text="quick_act.label"></div>
+    <select class="form-select mb-2" x-model="quick_act.player_id">
+      <option value="">-- Select player --</option>
+      <template x-for="p in human_players" :key="p.id"><option :value="p.id" x-text="p.name+' ('+fmt(p.balance)+')'"></option></template>
+    </select>
+    <div class="d-flex gap-2">
+      <button class="btn btn-amber" @click="do_quick_action()" :disabled="!quick_act.player_id">Confirm</button>
+      <button class="btn btn-outline-secondary" @click="quick_act.active=false">Cancel</button>
+    </div>
+  </div>
+
+  <div class="card p-3 mb-3">
+    <div class="fw-semibold text-muted small mb-2 text-uppercase">Custom Transfer</div>
+    <label class="form-label small text-muted">FROM</label>
+    <select class="form-select mb-2" x-model="tx.from_id" @change="if(tx.to_id===tx.from_id) tx.to_id=''">
+      <option value="">-- Select player --</option>
+      <template x-for="p in players" :key="p.id"><option :value="p.id" x-text="p.name+' ('+fmt(p.balance)+')'"></option></template>
+    </select>
+    <label class="form-label small text-muted">TO</label>
+    <select class="form-select mb-2" x-model="tx.to_id">
+      <option value="">-- Select player --</option>
+      <template x-for="p in players.filter(p => p.id !== tx.from_id)" :key="p.id"><option :value="p.id" x-text="p.name+' ('+fmt(p.balance)+')'"></option></template>
+    </select>
+    <label class="form-label small text-muted mt-1">AMOUNT (₹)</label>
+    <input type="number" class="form-control mb-2" placeholder="e.g. 200000" x-model.number="tx.amount">
+    <label class="form-label small text-muted">DESCRIPTION</label>
+    <input type="text" class="form-control mb-2" placeholder="e.g. Rent payment" x-model="tx.desc">
+    <button class="btn btn-amber w-100" @click="do_transfer()" :disabled="!tx.from_id||!tx.to_id||tx.amount<=0"><i class="bi bi-arrow-left-right me-1"></i> Transfer</button>
+  </div>
+
+  <div class="card p-3 mb-3">
+    <div class="fw-semibold text-muted small mb-2 text-uppercase">Buy Property</div>
+    <select class="form-select mb-2" x-model="buy_form.player_id">
+      <option value="">-- Buyer --</option>
+      <template x-for="p in human_players" :key="p.id"><option :value="p.id" x-text="p.name"></option></template>
+    </select>
+    <select class="form-select mb-2" x-model="buy_form.prop_id">
+      <option value="">-- Property --</option>
+      <template x-for="pr in available_props" :key="pr.id"><option :value="pr.id" x-text="pr.name+' — '+fmt(pr.price)"></option></template>
+    </select>
+    <button class="btn btn-outline-success" @click="do_buy_prop()" :disabled="!buy_form.player_id||!buy_form.prop_id"><i class="bi bi-cart-plus"></i> Buy</button>
+  </div>
+
+  <div class="card p-3">
+    <div class="fw-semibold text-muted small mb-2 text-uppercase">Collect Rent</div>
+    <select class="form-select mb-2" x-model="rent_form.prop_id" @change="calc_rent()">
+      <option value="">-- Property --</option>
+      <template x-for="pr in owned_props" :key="pr.id"><option :value="pr.id" x-text="pr.name+' ('+pr.owner_name+')'"></option></template>
+    </select>
+    <select class="form-select mb-2" x-model="rent_form.payer_id">
+      <option value="">-- Payer --</option>
+      <template x-for="p in human_players" :key="p.id"><option :value="p.id" x-text="p.name"></option></template>
+    </select>
+    <div class="d-flex align-items-center gap-2 mb-2" x-show="rent_form.prop_id">
+      <span class="text-muted small">Rent:</span>
+      <span class="fw-bold text-info" x-text="fmt(rent_form.rent_amt)"></span>
+    </div>
+    <button class="btn btn-outline-danger" @click="collect_rent()" :disabled="!rent_form.prop_id||!rent_form.payer_id||rent_form.rent_amt<=0"><i class="bi bi-currency-rupee"></i> Collect Rent</button>
+  </div>
+</div>
+
+<!-- PROPERTIES -->
+<div class="view-section" x-show="view==='properties'" x-cloak>
+  <div class="section-title"><i class="bi bi-map-fill me-2"></i>Properties</div>
+  <template x-for="grp in property_groups" :key="grp.group">
+    <div class="mb-3">
+      <div class="group-header d-flex align-items-center gap-2">
+        <span class="badge-group" :style="'background:'+grp.color"></span>
+        <span x-text="grp.label"></span>
+        <span class="ms-auto text-muted" style="font-size:.65rem" x-text="grp.props.filter(p=>p.owner_id).length+'/'+grp.props.length+' owned'"></span>
+      </div>
+      <div class="d-flex flex-wrap gap-3">
+        <template x-for="pr in grp.props" :key="pr.id">
+          <div class="cdeed">
+            <div class="cdeed-header" :style="'background:'+pr.color_hex">
+              <div class="cdeed-type-label" x-text="pr.type==='colored'?'TITLE DEED':pr.type==='station'?'TRANSPORT':'UTILITY'"></div>
+            </div>
+            <div class="cdeed-name" x-text="pr.name"></div>
+            <div class="cdeed-dev" x-show="pr.hotel || pr.houses > 0">
+              <template x-for="i in pr.houses" :key="i"><span style="width:7px;height:6px;background:#16a34a;border-radius:1px;display:inline-block"></span></template>
+              <span x-show="pr.hotel" style="width:12px;height:7px;background:#dc2626;border-radius:1px;display:inline-block"></span>
+            </div>
+            <div class="cdeed-body">
+              <div class="cdeed-owner" :class="!pr.owner_id&&'available'" x-text="pr.owner_name || 'Available'"></div>
+              <div class="cdeed-rent" x-show="pr.owner_id && pr.rent > 0" x-text="'Rent: '+fmt(pr.rent)"></div>
+              <div class="cdeed-price" x-text="fmt(pr.price)"></div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </template>
+</div>
+
+<!-- HISTORY -->
+<div class="view-section" x-show="view==='history'" x-cloak>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="section-title mb-0"><i class="bi bi-clock-history me-2"></i>Transaction History</div>
+    <small class="text-muted" x-text="transactions.length+' transactions'"></small>
+  </div>
+  <div x-show="transactions.length===0" class="text-muted text-center py-4">No transactions yet.</div>
+  <template x-for="t in transactions" :key="t.id">
+    <div class="tx-row mb-1" style="border-color:#4f46e5">
+      <div class="d-flex justify-content-between">
+        <span class="fw-semibold small">
+          <span class="text-danger" x-text="t.from_name"></span>
+          <i class="bi bi-arrow-right text-muted mx-1"></i>
+          <span class="text-success" x-text="t.to_name"></span>
+        </span>
+        <span class="fw-bold text-info" x-text="fmt(t.amount)"></span>
+      </div>
+      <div class="text-muted small" x-text="t.description"></div>
+    </div>
+  </template>
+</div>
+
+<!-- REGISTER -->
+<div class="view-section" x-show="view==='register'" x-cloak>
+  <div class="section-title"><i class="bi bi-person-plus me-2"></i>Register Player</div>
+  <div class="card p-3 mb-3" style="max-width:480px">
+    <div class="mb-3">
+      <label class="form-label small text-muted">Player Name</label>
+      <input type="text" class="form-control" placeholder="e.g. Rahul" x-model="reg_form.name" @keydown.enter="do_register()">
+    </div>
+    <div class="mb-3">
+      <label class="form-label small text-muted">RFID Card UID <span class="text-muted">(optional)</span></label>
+      <div class="input-group">
+        <input type="text" class="form-control font-monospace" placeholder="e.g. AB12CD34" x-model="reg_form.card_uid">
+        <button class="btn btn-outline-secondary" @click="reg_form.card_uid=''" title="Clear"><i class="bi bi-x"></i></button>
+      </div>
+    </div>
+    <button class="btn btn-amber w-100" @click="do_register()" :disabled="!reg_form.name"><i class="bi bi-person-check me-1"></i> Register Player</button>
+  </div>
+  <div class="section-title small mt-3"><i class="bi bi-people me-1"></i>Current Players</div>
+  <template x-for="p in human_players" :key="p.id">
+    <div class="player-list-row d-flex align-items-center gap-3 p-2 mb-1 rounded">
+      <i class="bi bi-person-circle text-info fs-5"></i>
+      <div>
+        <div class="fw-semibold" x-text="p.name"></div>
+        <small class="text-muted font-monospace" x-text="p.card_uid||'No card'"></small>
+      </div>
+      <span class="ms-auto text-success fw-bold" x-text="fmt(p.balance)"></span>
+      <button class="btn btn-sm btn-outline-danger" @click="do_delete_player(p.id, p.name)" title="Remove player"><i class="bi bi-trash"></i></button>
+    </div>
+  </template>
+</div>
+
+<!-- SETTINGS -->
+<div class="view-section" x-show="view==='settings'" x-cloak>
+  <div class="section-title"><i class="bi bi-gear me-2"></i>Settings</div>
+  <div class="card p-3 mb-3" style="max-width:560px">
+    <div class="fw-semibold mb-1"><i class="bi bi-file-earmark-code me-1"></i>Load Properties File</div>
+    <p class="small text-muted mb-3">Upload a custom <code>properties.json</code> to change board properties, prices, and starting balances. <span class="text-warning">The game will be reset.</span></p>
+    <div class="drop-zone mb-3"
+         :class="config_form.dragging && 'drag-over'"
+         @dragover.prevent="config_form.dragging = true"
+         @dragleave.prevent="config_form.dragging = false"
+         @drop.prevent="on_file_drop($event)">
+      <i class="bi bi-cloud-upload fs-3 d-block mb-2"></i>
+      <div>Drag &amp; drop <code>properties.json</code> here</div>
+      <div class="my-2 text-muted small">or</div>
+      <label class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-folder2-open me-1"></i>Browse file
+        <input type="file" accept=".json,application/json" class="d-none" @change="on_file_select($event)">
+      </label>
+    </div>
+    <div class="fw-semibold small mb-1">Load from URL</div>
+    <div class="input-group mb-1">
+      <input type="text" class="form-control form-control-sm font-monospace" placeholder="https://example.com/properties.json" x-model="config_form.url" @keydown.enter="do_load_url()">
+      <button class="btn btn-sm btn-outline-info" @click="do_load_url()" :disabled="!config_form.url || config_form.loading">
+        <span x-show="config_form.loading" class="spinner-border spinner-border-sm me-1"></span>
+        <i class="bi bi-download" x-show="!config_form.loading"></i> Load
+      </button>
+    </div>
+    <small class="text-muted">The URL must be publicly accessible (CORS-enabled) from your browser.</small>
+  </div>
+
+  <div class="card p-3 mb-3" style="max-width:560px">
+    <div class="fw-semibold mb-2"><i class="bi bi-info-circle me-1"></i>Current Board Config</div>
+    <div class="d-flex flex-wrap gap-3">
+      <div><div class="small text-muted">Player start</div><div class="fw-bold text-success" x-text="fmt(players.find(p=>!p.is_bank)?.balance ?? 0) + (game_started ? '' : ' (on start)')"></div></div>
+      <div><div class="small text-muted">Bank balance</div><div class="fw-bold text-warning" x-text="fmt(players.find(p=>p.is_bank)?.balance ?? 0)"></div></div>
+      <div><div class="small text-muted">Properties</div><div class="fw-bold" x-text="properties.length"></div></div>
+      <div><div class="small text-muted">Players</div><div class="fw-bold" x-text="players.filter(p=>!p.is_bank).length"></div></div>
+    </div>
+  </div>
+
+  <div class="card p-3" style="max-width:560px">
+    <div class="fw-semibold mb-2"><i class="bi bi-floppy me-1"></i>Save Data</div>
+    <p class="small text-muted mb-2">Export your game state to a file, or restore from a previous export.</p>
+    <div class="d-flex gap-2 flex-wrap">
+      <button class="btn btn-sm btn-outline-success" @click="export_save()"><i class="bi bi-download me-1"></i>Export Save</button>
+      <label class="btn btn-sm btn-outline-warning mb-0">
+        <i class="bi bi-upload me-1"></i>Import Save
+        <input type="file" accept=".json,application/json" class="d-none" @change="import_save($event)">
+      </label>
+      <button class="btn btn-sm btn-outline-danger" @click="confirm_reset()"><i class="bi bi-arrow-counterclockwise me-1"></i>Reset Game</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container">
+  <div class="toast show align-items-center border-0" role="alert" x-show="toast.show" x-transition
+       :class="'bg-'+(toast.type==='error'?'danger':'success')">
+    <div class="d-flex">
+      <div class="toast-body fw-semibold" x-text="toast.msg"></div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" @click="toast.show=false"></button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="app.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+</body>
+</html>
