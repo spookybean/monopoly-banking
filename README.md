@@ -1,6 +1,6 @@
-# Monopoly Bank India — GitHub Pages
+# Monopoly Bank Indian version — GitHub Pages
 
-Browser-only version of the digital banking app. No server, no hardware required.  
+Browser-only version of the digital banking app. No server, no hardware required.
 State is stored in `localStorage`; `properties.json` is fetched from the repo at runtime.
 
 ## Deploy to GitHub Pages
